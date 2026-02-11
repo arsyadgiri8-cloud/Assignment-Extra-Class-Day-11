@@ -32,7 +32,7 @@ Project ini dibuat sebagai bagian dari assignment Back End Web Development Bootc
 ---
 
 ## 📁 Struktur Project
-
+```
 src
 ├── main
 │ └── java/com/Assignment/Day/_7
@@ -47,7 +47,7 @@ src
 └── java/com/Assignment/Day/_7/service
 ├── AuthServiceTest.java
 └── ProductServiceImplTest.java
-
+```
 
 ---
 
