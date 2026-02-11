@@ -17,19 +17,39 @@ public class JwtFilter extends OncePerRequestFilter {
         this.jwtUtil = jwtUtil;
     }
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain chain)
-            throws IOException, jakarta.servlet.ServletException {
+   @Override
+protected void doFilterInternal(HttpServletRequest request,
+                                HttpServletResponse response,
+                                FilterChain chain)
+        throws IOException, jakarta.servlet.ServletException {
 
-        String header = request.getHeader("Authorization");
+    String path = request.getServletPath();
 
-        if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
-            jwtUtil.extractUsername(token); // validate token
-        }
-
+    // Skip auth endpoint
+    if (path.startsWith("/api/auth")) {
         chain.doFilter(request, response);
+        return;
     }
+
+    String header = request.getHeader("Authorization");
+
+    // Kalau tidak ada Authorization → lanjut aja
+    if (header == null || !header.startsWith("Bearer ")) {
+        chain.doFilter(request, response);
+        return;
+    }
+
+    String token = header.substring(7).trim();
+
+    // Extra safety
+    if (token.isEmpty()) {
+        chain.doFilter(request, response);
+        return;
+    }
+
+    jwtUtil.extractUsername(token);
+
+    chain.doFilter(request, response);
+}
+
 }
